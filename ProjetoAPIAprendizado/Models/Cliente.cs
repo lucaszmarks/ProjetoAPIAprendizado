@@ -11,5 +11,11 @@
             Nome = nome;
             Cpf = cpf;
         }
+
+        public void AtualizarDados(string novoNome, string novoCpf)
+        {
+            Cpf = novoCpf;
+            Nome = novoNome;
+        }
     }
 }
