@@ -56,5 +56,7 @@ Para verificar se tudo está funcionando como esperado, execute os testes automa
 
 ```bash
 dotnet test
+```
+
 ---
 Desenvolvido por [Lucas Marques de Oliveira](linkedin.com/in/lucas-marques-903234286)
