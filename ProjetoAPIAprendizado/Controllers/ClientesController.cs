@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoAPIAprendizado.Models; 
-using Microsoft.EntityFrameworkCore; 
+using ProjetoAPIAprendizado.Models;
+
+using ProjetoAPIAprendizado.DTOs;
+using ProjetoAPIAprendizado.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ProjetoAPIAprendizado.Controllers
@@ -9,59 +12,61 @@ namespace ProjetoAPIAprendizado.Controllers
     [Route("api/[controller]")]
     public class ClientesController : ControllerBase
     {
-        private readonly ApiDbContext _contexto;
-
-        
-        public ClientesController(ApiDbContext contexto)
+        private readonly IClienteRepository _repositorio;
+        public ClientesController(IClienteRepository repositorio)
         {
-            _contexto = contexto;
+            _repositorio = repositorio;
         }
+
         //Função Get, para vizualizar os dados
-        [HttpGet]
-        public IActionResult GetClientes()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Cliente>> SearchById(int id)
         {
-            var clientes = _contexto.Clientes.ToList();
+            var clientePorId = await _repositorio.SearchByIdAsync(id);
+            if (clientePorId == null) return NotFound();
+            return Ok(clientePorId);
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<Cliente>>> GetClientes()
+        {
+            var clientes = await _repositorio.GetClientesAsync();
             return Ok(clientes);
         }
         //Função Create, criação de dados
         [HttpPost]
-        public IActionResult CriarCliente([FromBody] Cliente novoCliente)
+        public async Task<ActionResult<Cliente>> CreateCliente([FromBody] ClienteCreateDTO novoClienteDto)
         {
-
-            _contexto.Clientes.Add(novoCliente);
-
-            _contexto.SaveChanges();
-
-            return Ok(novoCliente);
+            Cliente novoCliente = new Cliente(novoClienteDto.Nome,novoClienteDto.Cpf);
+            var clienteCriado = await _repositorio.CreateClienteAsync(novoCliente);
+            return Ok(clienteCriado);
         }
         //Função Delete, deletar dados
         [HttpDelete("{id}")]
-        public IActionResult DeleteClientes(int id) {
-            var clienteEncontrado = _contexto.Clientes.Find(id);
+        public async Task<ActionResult<Cliente>> RemoveCliente(int id)
+        {
+            var clienteRemovido = await _repositorio.RemoveClienteAsync(id);
 
-            if (clienteEncontrado == null)
+            if (clienteRemovido == null)
             {
                 return NotFound();
             }
-            _contexto.Clientes.Remove(clienteEncontrado);
-            _contexto.SaveChanges();
-            return Ok(clienteEncontrado); 
+            
+            return Ok(clienteRemovido);
         }
 
         //Função Update, atualizar dados
         [HttpPut("{id}")]
-        public IActionResult AtualizarCliente(int id, [FromBody] Cliente clienteAtualizado)
+        public async Task<ActionResult<Cliente>> UpdateClienteAsync(int id, [FromBody] ClienteCreateDTO novoClienteDto)
         {
-            var clienteExistente = _contexto.Clientes.Find(id);
+            Cliente novoCliente = new Cliente(novoClienteDto.Nome, novoClienteDto.Cpf);
+            var clienteAtualizado = await _repositorio.UpdateClienteAsync(id, novoCliente);
 
-            if ( clienteExistente == null)
+            if (clienteAtualizado == null)
             {
                 return NotFound();
 
             }
-            clienteExistente.AtualizarDados(clienteAtualizado.Nome, clienteAtualizado.Cpf);
-            _contexto.SaveChanges();
-            return Ok(clienteExistente);
+            return Ok(clienteAtualizado);
         }
 
 
