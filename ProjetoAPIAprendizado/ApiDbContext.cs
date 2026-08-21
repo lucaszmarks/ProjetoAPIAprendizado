@@ -7,7 +7,9 @@ namespace ProjetoAPIAprendizado
     {
         public DbSet<Cliente> Clientes { get; set; }
 
+        public DbSet<Endereco> Enderecos { get; set; }
 
+        
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
         {
         }

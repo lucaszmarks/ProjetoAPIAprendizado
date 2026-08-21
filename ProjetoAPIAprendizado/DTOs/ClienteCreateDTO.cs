@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjetoAPIAprendizado.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 namespace ProjetoAPIAprendizado.DTOs 
 {
@@ -13,5 +14,7 @@ namespace ProjetoAPIAprendizado.DTOs
         [Required(ErrorMessage = "CPF Obrigatório")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF tem obrigatoriamente 11 números")]
         public string Cpf { get;  set; }
+
+        public List<Endereco> Enderecos { get; set; }
     }
 }

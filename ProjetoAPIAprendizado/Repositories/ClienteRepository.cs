@@ -15,11 +15,14 @@ namespace ProjetoAPIAprendizado.Repositories
 
         public async Task<Cliente> SearchByIdAsync(int id)
         {
-            return await _contexto.Clientes.FindAsync(id);
+            return await _contexto.Clientes
+                            .Include(c => c.Enderecos) 
+                          .FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<List<Cliente>> GetClientesAsync()
         {
-            return await _contexto.Clientes.ToListAsync();
+            return await _contexto.Clientes.Include(c => c.Enderecos) 
+                          .ToListAsync();
         }
         public async Task<Cliente> CreateClienteAsync(Cliente novoCliente)
         {
