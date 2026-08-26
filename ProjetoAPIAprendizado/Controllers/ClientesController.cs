@@ -27,9 +27,12 @@ namespace ProjetoAPIAprendizado.Controllers
             return Ok(clientePorId);
         }
         [HttpGet]
-        public async Task<ActionResult<List<Cliente>>> GetClientes()
+        public async Task<ActionResult<List<Cliente>>> GetClientes([FromQuery] int numeroPagina = 1,
+        [FromQuery] int tamanhoPagina = 5) 
+        
         {
-            var clientes = await _repositorio.GetClientesAsync();
+
+            var clientes = await _repositorio.GetClientesAsync(numeroPagina, tamanhoPagina);
             return Ok(clientes);
         }
         //Função Create, criação de dados

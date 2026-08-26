@@ -15,6 +15,6 @@ namespace ProjetoAPIAprendizado.DTOs
         [StringLength(11, MinimumLength = 11, ErrorMessage = "CPF tem obrigatoriamente 11 números")]
         public string Cpf { get;  set; }
 
-        public List<Endereco> Enderecos { get; set; }
+        
     }
 }

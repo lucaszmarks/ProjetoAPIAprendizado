@@ -19,9 +19,11 @@ namespace ProjetoAPIAprendizado.Repositories
                             .Include(c => c.Enderecos) 
                           .FirstOrDefaultAsync(c => c.Id == id);
         }
-        public async Task<List<Cliente>> GetClientesAsync()
+        public async Task<List<Cliente>> GetClientesAsync(int numeroPagina, int tamanhoPagina)
         {
-            return await _contexto.Clientes.Include(c => c.Enderecos) 
+            return await _contexto.Clientes.Include(c => c.Enderecos)
+                          .Skip((numeroPagina - 1) * tamanhoPagina)
+                          .Take(tamanhoPagina)
                           .ToListAsync();
         }
         public async Task<Cliente> CreateClienteAsync(Cliente novoCliente)

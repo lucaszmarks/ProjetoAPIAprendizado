@@ -13,11 +13,11 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 
 var app = builder.Build();
-
+app.UseMiddleware<ProjetoAPIAprendizado.Middlewares.GlobalErrorMiddleware>();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 
