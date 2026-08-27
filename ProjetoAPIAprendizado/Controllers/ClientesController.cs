@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoAPIAprendizado.Models;
-
+using AutoMapper;
 using ProjetoAPIAprendizado.DTOs;
 using ProjetoAPIAprendizado.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,48 +13,44 @@ namespace ProjetoAPIAprendizado.Controllers
     public class ClientesController : ControllerBase
     {
         private readonly IClienteRepository _repositorio;
-        public ClientesController(IClienteRepository repositorio)
+        private readonly IMapper _mapper;
+        public ClientesController(IClienteRepository repositorio, IMapper mapper)
         {
             _repositorio = repositorio;
+            _mapper = mapper;
         }
 
         //Função Get, para vizualizar os dados
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> SearchById(int id)
+        public async Task<ActionResult<ClienteResponseDTO>> SearchById(int id)
         {
             var clientePorId = await _repositorio.SearchByIdAsync(id);
             if (clientePorId == null) return NotFound();
-            return Ok(clientePorId);
+            var clientesRetorno = _mapper.Map<ClienteResponseDTO>(clientePorId);
+            return Ok(clientesRetorno);
         }
         [HttpGet]
-        public async Task<ActionResult<List<Cliente>>> GetClientes([FromQuery] int numeroPagina = 1,
+        public async Task<ActionResult<IEnumerable<ClienteResponseDTO>>> GetClientes([FromQuery] int numeroPagina = 1,
         [FromQuery] int tamanhoPagina = 5) 
         
         {
-
             var clientes = await _repositorio.GetClientesAsync(numeroPagina, tamanhoPagina);
-            return Ok(clientes);
+            
+            var clientesRetorno = _mapper.Map<List<ClienteResponseDTO>>(clientes);
+            
+            return Ok(clientesRetorno);
         }
         //Função Create, criação de dados
         [HttpPost]
-        public async Task<ActionResult<Cliente>> CreateCliente([FromBody] ClienteCreateDTO novoClienteDto)
+        public async Task<ActionResult<Cliente>> CriarCliente([FromBody] ClienteCreateDTO novoClienteDto)
         {
-            Cliente novoCliente = new Cliente(novoClienteDto.Nome,novoClienteDto.Cpf);
-            var clienteCriado = await _repositorio.CreateClienteAsync(novoCliente);
-            return Ok(clienteCriado);
-        }
-        //Função Delete, deletar dados
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Cliente>> RemoveCliente(int id)
-        {
-            var clienteRemovido = await _repositorio.RemoveClienteAsync(id);
-
-            if (clienteRemovido == null)
-            {
-                return NotFound();
-            }
             
-            return Ok(clienteRemovido);
+            var cliente = _mapper.Map<Cliente>(novoClienteDto);
+
+            await _repositorio.CreateClienteAsync(cliente);
+
+            
+            return CreatedAtAction(nameof(GetClientes), new { id = cliente.Id }, cliente);
         }
 
         //Função Update, atualizar dados
