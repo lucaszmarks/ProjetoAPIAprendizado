@@ -56,7 +56,25 @@ namespace ProjetoAPIAprendizado.Repositories
             await _contexto.SaveChangesAsync();
             return clienteExistente;
         }
+        public async Task<bool> CheckCpfExistsAsync(string cpf)
+        {
+            
+            return await _contexto.Clientes.AnyAsync(c => c.Cpf == cpf);
+        }
+        public async Task<bool> DeleteClienteAsync(int id)
+        {
+            var cliente = await _contexto.Clientes.FindAsync(id);
 
+            if (cliente == null)
+            {
+                return false; 
+            }
+
+            _contexto.Clientes.Remove(cliente);
+            await _contexto.SaveChangesAsync();
+
+            return true; 
+        }
 
 
 

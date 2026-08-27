@@ -44,13 +44,33 @@ namespace ProjetoAPIAprendizado.Controllers
         [HttpPost]
         public async Task<ActionResult<Cliente>> CriarCliente([FromBody] ClienteCreateDTO novoClienteDto)
         {
-            
+            bool cpfExiste = await _repositorio.CheckCpfExistsAsync(novoClienteDto.Cpf);
+
+            if (cpfExiste)
+            {
+                return Conflict(new { mensagem = "Operação negada: Este CPF já está cadastrado no sistema." });
+            }
             var cliente = _mapper.Map<Cliente>(novoClienteDto);
 
             await _repositorio.CreateClienteAsync(cliente);
 
             
             return CreatedAtAction(nameof(GetClientes), new { id = cliente.Id }, cliente);
+        }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteCliente(int id)
+        {
+            
+            bool sucesso = await _repositorio.DeleteClienteAsync(id);
+
+            if (!sucesso)
+            {
+                
+                return NotFound(new { mensagem = "Cliente não encontrado para exclusão." });
+            }
+
+            
+            return NoContent();
         }
 
         //Função Update, atualizar dados
