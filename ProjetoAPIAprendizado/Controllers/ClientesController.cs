@@ -22,9 +22,9 @@ namespace ProjetoAPIAprendizado.Controllers
 
         //Função Get, para vizualizar os dados
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClienteResponseDTO>> SearchById(int id)
+        public async Task<ActionResult<ClienteResponseDTO>> GetClienteById(int id)
         {
-            var clientePorId = await _repositorio.SearchByIdAsync(id);
+            var clientePorId = await _repositorio.GetClienteByIdAsync(id);
             if (clientePorId == null) return NotFound();
             var clientesRetorno = _mapper.Map<ClienteResponseDTO>(clientePorId);
             return Ok(clientesRetorno);
@@ -66,7 +66,7 @@ namespace ProjetoAPIAprendizado.Controllers
             if (!sucesso)
             {
                 
-                return NotFound(new { mensagem = "Cliente não encontrado para exclusão." });
+                return NotFound(new { mensagem = "Cliente não encontrado para exclusão." }); 
             }
 
             
@@ -75,17 +75,19 @@ namespace ProjetoAPIAprendizado.Controllers
 
         //Função Update, atualizar dados
         [HttpPut("{id}")]
-        public async Task<ActionResult<Cliente>> UpdateClienteAsync(int id, [FromBody] ClienteCreateDTO novoClienteDto)
+        public async Task<ActionResult<Cliente>> UpdateCliente(int id, [FromBody] ClienteCreateDTO clienteAtualizadoDto)
         {
-            Cliente novoCliente = new Cliente(novoClienteDto.Nome, novoClienteDto.Cpf);
-            var clienteAtualizado = await _repositorio.UpdateClienteAsync(id, novoCliente);
-
-            if (clienteAtualizado == null)
+            var clienteExistente = await _repositorio.GetClienteByIdAsync(id);
+            if (clienteExistente == null)
             {
-                return NotFound();
-
+                return NotFound(new { mensagem = "Cliente não encontrado." });
             }
-            return Ok(clienteAtualizado);
+
+            _mapper.Map(clienteAtualizadoDto, clienteExistente);
+
+            await _repositorio.UpdateClienteAsync(clienteExistente);
+
+            return NoContent();
         }
 
 

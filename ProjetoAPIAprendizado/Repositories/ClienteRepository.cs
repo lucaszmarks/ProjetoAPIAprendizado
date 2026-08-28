@@ -13,7 +13,7 @@ namespace ProjetoAPIAprendizado.Repositories
             _contexto = contexto;
         }
 
-        public async Task<Cliente> SearchByIdAsync(int id)
+        public async Task<Cliente> GetClienteByIdAsync(int id)
         {
             return await _contexto.Clientes
                             .Include(c => c.Enderecos) 
@@ -43,18 +43,11 @@ namespace ProjetoAPIAprendizado.Repositories
             await _contexto.SaveChangesAsync();
             return clienteEncontrado;
         }
-        public async Task<Cliente> UpdateClienteAsync(int id, Cliente clienteAtualizado) 
+        public async Task<Cliente> UpdateClienteAsync(Cliente clienteAtualizado) 
         {
-            var clienteExistente = await _contexto.Clientes.FindAsync(id);
-
-            if (clienteExistente == null)
-            {
-                return null;
-
-            }
-            clienteExistente.AtualizarDados(clienteAtualizado.Nome, clienteAtualizado.Cpf);
+            _contexto.Clientes.Update(clienteAtualizado);
             await _contexto.SaveChangesAsync();
-            return clienteExistente;
+            return clienteAtualizado;
         }
         public async Task<bool> CheckCpfExistsAsync(string cpf)
         {

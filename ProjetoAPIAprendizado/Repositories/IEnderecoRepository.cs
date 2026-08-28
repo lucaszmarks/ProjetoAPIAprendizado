@@ -6,8 +6,9 @@ namespace ProjetoAPIAprendizado.Repositories
     {
         
         Task<Endereco> CreateEnderecoAsync(Endereco novoEndereco);
+        Task<List<Endereco>> GetEnderecoAsync();
 
-        
+
 
     }
 }

@@ -15,8 +15,14 @@ namespace ProjetoAPIAprendizado.Repositories
 
         public async Task<Endereco> CreateEnderecoAsync(Endereco novoEndereco)
         {
+            _contexto.Enderecos.Add(novoEndereco);
             await _contexto.SaveChangesAsync();
             return novoEndereco;
-        } 
+        }
+        public async Task<List<Endereco>> GetEnderecoAsync()
+        {
+            return await _contexto.Enderecos.ToListAsync();
+        }
+
     }
 }

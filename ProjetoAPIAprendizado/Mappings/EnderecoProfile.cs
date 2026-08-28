@@ -8,6 +8,7 @@ namespace ProjetoAPIAprendizado.Mappings
         public EnderecoProfile() 
         {    
             CreateMap<EnderecoCreateDTO, Endereco>();
+            CreateMap<Endereco, EnderecoResponseDTO>();
         }
     }
 }

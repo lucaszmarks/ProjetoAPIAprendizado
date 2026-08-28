@@ -31,6 +31,15 @@ namespace ProjetoAPIAprendizado.Controllers
             return Created($"/api/Enderecos/{endereco.Id}", endereco);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EnderecoResponseDTO>>> GetEndereco()
+        {
+
+            var enderecos = await _repository.GetEnderecoAsync();
+            var retornoEndereco = _mapper.Map<List<EnderecoResponseDTO>>(enderecos);
+            return Ok(retornoEndereco);
+        }
+
 
 
 

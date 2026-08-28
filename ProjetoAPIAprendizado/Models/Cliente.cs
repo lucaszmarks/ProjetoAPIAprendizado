@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Nome { get; protected set; }
         public string Cpf { get; protected set; }
-        public List<Endereco> Enderecos { get; set; } = new List<Endereco>();
+        public List<Endereco> Enderecos { get; set; } 
 
         public Cliente(string nome, string cpf)
         {
