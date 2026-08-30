@@ -23,6 +23,33 @@ namespace ProjetoAPIAprendizado.Repositories
         {
             return await _contexto.Enderecos.ToListAsync();
         }
+        public async Task<Endereco> GetEnderecoByIdAsync(int id)
+        {
+            return await _contexto.Enderecos
+                          .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<Endereco> UpdateEnderecoAsync(Endereco enderecoAtualizado)
+        {
+            _contexto.Enderecos.Update(enderecoAtualizado);
+            await _contexto.SaveChangesAsync();
+            return enderecoAtualizado;
+        }
+
+        public async Task<bool> DeleteEnderecoAsync(int id)
+        {
+            var endereco = await _contexto.Enderecos.FindAsync(id);
+
+            if (endereco == null)
+            {
+                return false;
+            }
+
+            _contexto.Enderecos.Remove(endereco);
+            await _contexto.SaveChangesAsync();
+
+            return true;
+        }
 
     }
 }

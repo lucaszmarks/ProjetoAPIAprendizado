@@ -32,17 +32,7 @@ namespace ProjetoAPIAprendizado.Repositories
             await _contexto.SaveChangesAsync();
             return novoCliente;
         }
-        public async Task<Cliente> RemoveClienteAsync(int id)
-        {
-            var clienteEncontrado = await _contexto.Clientes.FindAsync(id);
-            if (clienteEncontrado == null)
-            {
-                return null;
-            }
-            _contexto.Clientes.Remove(clienteEncontrado);
-            await _contexto.SaveChangesAsync();
-            return clienteEncontrado;
-        }
+       
         public async Task<Cliente> UpdateClienteAsync(Cliente clienteAtualizado) 
         {
             _contexto.Clientes.Update(clienteAtualizado);
