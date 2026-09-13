@@ -16,32 +16,36 @@ namespace ProjetoAPIAprendizado.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] LoginDTO login)
         {
-            // 1. Validamos o usuário e senha (simulando uma checagem no banco)
-            if (login.Username == "admin" && login.Password == "senha123") {
-
-                // 2. Preparamos a "Caneta" com a nossa Chave Secreta exata do Program.cs
-                var key = Encoding.UTF8.GetBytes("ChaveSecretaDaSuaAPI-PrecisaSerLonga123!@#");
-                
-                // 3. Desenhamos o Crachá (Token)
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, login.Username) 
-                    }),
-                    Expires = DateTime.UtcNow.AddHours(2),  // O crachá vale por 2 horas
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-                // 4. Fabricamos e entregamos o Token
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-
-                return Ok(new { token = tokenHandler.WriteToken(token) });
+            if (login.Username == "admin" && login.Password == "senha123")
+            {
+                return Ok(new { token = GerarToken(login.Username, "Admin") });
             }
-            // Se errar a senha, barrado na porta
+            else if (login.Username == "operador" && login.Password == "senha123")
+            {
+                return Ok(new { token = GerarToken(login.Username,"User")});
+            }
             return Unauthorized(new { mensagem = "Usuário ou senha inválidos." });
-        }
 
-            
+
+        }
+        private string GerarToken(string username, string role)
+        {
+            var key = Encoding.UTF8.GetBytes("ChaveSecretaDaSuaAPI-PrecisaSerLonga123!@#"); // Lembre-se de usar a SUA chave exata aqui
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, role) // Pega o cargo dinamicamente
+        }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
     }
-}
+    }

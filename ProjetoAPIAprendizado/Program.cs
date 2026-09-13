@@ -66,6 +66,26 @@ builder.Services.AddAuthentication(options =>
         // ATENÇÃO: Em projetos reais, essa senha fica escondida no appsettings.json!
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ChaveSecretaDaSuaAPI-PrecisaSerLonga123!@#"))
     };
+    options.Events = new JwtBearerEvents
+    {
+        // Dispara quando o usuário não tem o Token (Erro 401)
+        OnChallenge = context =>
+        {
+            context.HandleResponse(); 
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+            var result = System.Text.Json.JsonSerializer.Serialize(new { erro = "Acesso negado. Você precisa estar logado (Token ausente ou inválido)." });
+            return context.Response.WriteAsync(result);
+        },
+        // Dispara quando o usuário tem o Token, mas não tem o Cargo certo (Erro 403)
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = 403;
+            context.Response.ContentType = "application/json";
+            var result = System.Text.Json.JsonSerializer.Serialize(new { erro = "Permissão negada. Apenas Administradores podem realizar esta ação." });
+            return context.Response.WriteAsync(result);
+        }
+    };
 });
 
 var app = builder.Build();

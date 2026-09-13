@@ -29,6 +29,7 @@ namespace ProjetoAPIAprendizado.Controllers
         /// <param name="id">O ID do cliente que você deseja buscar.</param>
         /// <returns>Os detalhes do cliente solicitado.</returns>
         /// <response code="200">Retorna o cliente encontrado com sucesso.</response>
+        /// <response code="401">Se o usuário não está logado.</response>
         /// <response code="404">Se o ID informado não existir no banco de dados.</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<ClienteResponseDTO>> GetClienteById(int id)
@@ -42,6 +43,7 @@ namespace ProjetoAPIAprendizado.Controllers
         /// Retorna uma lista de clientes paginada.
         /// </summary>
         /// <param name="numeroPagina">O número da página que você deseja visualizar (padrão: 1)</param>
+        /// <response code="401">Se o usuário não está logado.</response>
         /// <param name="tamanhoPagina">Quantos clientes devem aparecer por página (padrão: 5)</param>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClienteResponseDTO>>> GetClientes([FromQuery] int numeroPagina = 1,
@@ -72,6 +74,7 @@ namespace ProjetoAPIAprendizado.Controllers
         /// <param name="novoClienteDto">Objeto contendo o Nome e o CPF do novo cliente.</param>
         /// <returns>O cliente recém-criado com seu ID gerado.</returns>
         /// <response code="201">Retorna o cliente recém-criado com sucesso.</response>
+        /// <response code="401">Se o usuário não está logado.</response>
         /// <response code="400">Se o CPF já estiver cadastrado ou os dados forem inválidos.</response>
         [HttpPost]
         public async Task<ActionResult<Cliente>> CriarCliente([FromBody] ClienteCreateDTO novoClienteDto)
@@ -95,8 +98,11 @@ namespace ProjetoAPIAprendizado.Controllers
         /// </summary>
         /// <param name="id">O ID do cliente que será excluído.</param>
         /// <response code="204">Cliente excluído com sucesso (sem retorno de conteúdo).</response>
+        /// <response code="401">Se o usuário não está logado.</response>
+        /// <response code="403">Se o usuário não tem permissão para realizar a requisição.</response>
         /// <response code="404">Se o ID informado não existir no banco de dados.</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteCliente(int id)
         {
             
@@ -119,6 +125,7 @@ namespace ProjetoAPIAprendizado.Controllers
         /// <param name="id">O ID do cliente que será atualizado.</param>
         /// <param name="clienteAtualizadoDto">Objeto contendo os novos dados do cliente.</param>
         /// <response code="204">Cliente atualizado com sucesso (sem retorno de conteúdo).</response>
+        /// <response code="401">Se o usuário não está logado.</response>
         /// <response code="404">Se o ID informado não existir no banco de dados.</response>
         [HttpPut("{id}")]
         public async Task<ActionResult<Cliente>> UpdateCliente(int id, [FromBody] ClienteCreateDTO clienteAtualizadoDto)
