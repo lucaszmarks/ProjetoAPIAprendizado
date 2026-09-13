@@ -5,11 +5,13 @@ using ProjetoAPIAprendizado.DTOs;
 using ProjetoAPIAprendizado.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjetoAPIAprendizado.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ClientesController : ControllerBase
     {
         private readonly IClienteRepository _repositorio;

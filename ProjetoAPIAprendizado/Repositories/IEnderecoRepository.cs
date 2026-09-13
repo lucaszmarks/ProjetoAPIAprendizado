@@ -1,5 +1,4 @@
 ﻿using ProjetoAPIAprendizado.Models;
-using ProjetoAPIAprendizado.Models;
 namespace ProjetoAPIAprendizado.Repositories
 {
     public interface IEnderecoRepository
