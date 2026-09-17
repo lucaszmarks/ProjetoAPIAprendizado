@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using ProjetoAPIAprendizado;
+
 using ProjetoAPIAprendizado.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using ProjetoAPIAprendizado.Context;
+using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -12,18 +14,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // 1. Cria o botão "Authorize" no Swagger
+    // Adiciona o botão de cadeado e a configuração do Token
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Insira o token JWT desta maneira: Bearer {seu token}"
+        Description = "Insira o token JWT que você recebeu no Login."
     });
 
-    // 2. Diz ao Swagger para enviar o token em todas as requisições trancadas
+    // Avisa o Swagger que ele precisa mandar o token em todas as requisições protegidas
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -38,21 +40,39 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-}); builder.Services.AddDbContext<ApiDbContext>(options =>options.UseSqlite("DataSource=meubanco.db"));
+}); 
+
+
+builder.Services.AddDbContext<ApiDbContext>(options =>options.UseSqlite("DataSource=meubanco.db"));
+//  Registra o contexto de segurança apontando para a string nova
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("AuthConnectionString")));
+// Configura o motor do Identity
+builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>().AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("MinhaAPI").AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+});
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// 1. Informamos ao C# que usaremos a Autenticação baseada em JWT
+// Informamos ao C# que usaremos a Autenticação baseada em JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-// 2. Definimos as regras rigorosas de validação do Crachá VIP
+//  Definimos as regras rigorosas de validação do Crachá VIP
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

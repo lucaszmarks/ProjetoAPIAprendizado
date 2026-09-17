@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoAPIAprendizado.Models;
 
-namespace ProjetoAPIAprendizado
+namespace ProjetoAPIAprendizado.Context
 {
     public class ApiDbContext : DbContext
     {

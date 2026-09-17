@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using ProjetoAPIAprendizado.Context;
 using ProjetoAPIAprendizado.Models;
 namespace ProjetoAPIAprendizado.Repositories
 {
