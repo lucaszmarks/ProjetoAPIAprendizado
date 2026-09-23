@@ -1,6 +1,6 @@
-﻿====================================================================
+
 API DE GERENCIAMENTO - LABORATÓRIO DE EVOLUÇÃO .NET
-====================================================================
+
 
 Projeto desenvolvido como o meu principal ambiente de prática e evolução no ecossistema .NET. Mais do que um simples projeto, esta é uma zona de aprendizado contínuo. 
 
@@ -74,8 +74,8 @@ Para verificar se tudo está funcionando como esperado, execute os testes automa
    dotnet test
 
 
-====================================================================
+
 Desenvolvido com dedicação por Lucas Marques de Oliveira
 LinkedIn: www.linkedin.com/in/lucas-marques-dev
-====================================================================
+
 
