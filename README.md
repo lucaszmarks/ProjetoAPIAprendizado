@@ -1,62 +1,73 @@
-﻿#  API de Gerenciamento de Clientes
+﻿API de Gerenciamento - Laboratório de Evolução .NET
+Projeto desenvolvido como o meu principal ambiente de prática e evolução no ecossistema .NET. Mais do que um simples projeto, esta é uma zona de aprendizado contínuo.
 
-Projeto desenvolvido como parte da minha jornada de aprendizado no ecossistema .NET. Trata-se de uma **API RESTful** completa que implementa operações CRUD, persistência de dados e testes automatizados.
+O que começou como uma API básica de CRUD está em constante expansão, incorporando gradualmente padrões arquiteturais corporativos, segurança avançada e boas práticas exigidas pelo mercado.
 
-## Tecnologias Utilizadas
+Tecnologias e Padrões Utilizados
+C# e .NET 8 (ASP.NET Core Web API)
 
-* **C#** e **.NET 8**
-* **ASP.NET Core** (Web API)
-* **Entity Framework Core** (ORM)
-* **SQLite** (Banco de Dados Relacional)
-* **xUnit** (Testes Unitários)
-* **Swagger/OpenAPI** (Documentação Interativa)
+Entity Framework Core (ORM) com SQLite
 
-##  Funcionalidades
+Segurança: ASP.NET Core Identity & JWT (JSON Web Tokens) Bearer Authentication
 
-* ✅ **CRUD Completo:** Criação, Leitura, Atualização e Exclusão de Clientes.
-* 💾 **Persistência de Dados:** Uso do padrão *Code-First* com Entity Framework para criar e gerenciar o banco de dados SQLite automaticamente.
-* 🛡️ **Testes Automatizados:** Testes unitários para garantir a integridade da lógica de negócios (Domínio).
-* 📚 **Documentação:** Interface Swagger integrada para testar endpoints visualmente.
-* 🏗️ **Arquitetura:** Organização em *Controllers*, *Models* e *Contexto* (MVC/Layered).
+Arquitetura & Design Patterns:
 
-## Como Rodar o Projeto
+Repository Pattern
 
-### Pré-requisitos
-* [.NET SDK 8.0](https://dotnet.microsoft.com/download) instalado.
-* Visual Studio 2022 ou VS Code.
+DTOs (Data Transfer Objects) para evitar ataques de Over-posting
 
-### Passo a Passo
-1.  **Clone o repositório:**
-    ```bash
-    git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
-    ```
-2.  **Entre na pasta do projeto:**
-    ```bash
-    cd ProjetoAPIAprendizado
-    ```
-3.  **Restaure os pacotes:**
-    ```bash
-    dotnet restore
-    ```
-4.  **Gere o Banco de Dados (Migrations):**
-    O projeto está configurado para criar o arquivo `meubanco.db` automaticamente se ele não existir, mas você pode garantir rodando:
-    ```bash
-    dotnet ef database update
-    ```
-5.  **Execute a API:**
-    ```bash
-    dotnet run --project ProjetoAPIAprendizado
-    ```
-6.  **Acesse o Swagger:**
-    Abra seu navegador em `http://localhost:5XXX/swagger` (a porta aparecerá no terminal) para testar os endpoints.
+Separação de Responsabilidades (Contextos de banco de dados separados para Negócio e Segurança)
 
-##  Como Rodar os Testes
+xUnit (Testes Unitários)
 
+Swagger/OpenAPI (Documentação e testes interativos com suporte a JWT)
+
+Funcionalidades Implementadas (Evolução)
+✅ CRUD Completo: Criação, Leitura, Atualização e Exclusão de Clientes.
+
+🔒 Autenticação e Autorização: Sistema robusto de Registro e Login gerando tokens JWT temporários. Proteção de endpoints baseada em perfis de usuário (Roles).
+
+📁 Upload de Arquivos Estáticos: Endpoint preparado para receber arquivos físicos (multipart/form-data), armazená-los localmente no servidor e salvar apenas os metadados (URL, tamanho, extensão) no banco de dados.
+
+💾 Múltiplos Bancos de Dados: Isolamento total de segurança com o uso de dois bancos de dados independentes (meubanco.db para domínio de negócios e meubanco_auth.db exclusivo para credenciais do Identity).
+
+Como Rodar o Projeto
+Pré-requisitos
+
+.NET SDK 8.0 instalado.
+Visual Studio 2022 ou VS Code.
+
+Passo a Passo
+Clone o repositório:
+Bash
+git clone https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
+
+Entre na pasta do projeto:
+
+Bash
+cd ProjetoAPIAprendizado
+
+Restaure os pacotes:
+Bash
+dotnet restore
+
+Gere os Bancos de Dados (Migrations):
+Como o projeto utiliza separação de contextos de dados, você precisa atualizar ambos os bancos. No Console do Gerenciador de Pacotes (Visual Studio), rode:
+PowerShell
+Update-Database -Context AuthDbContext
+Update-Database -Context ApiDbContext
+
+Execute a API:
+Bash
+dotnet run --project ProjetoAPIAprendizado
+Acesse o Swagger:
+Abra seu navegador em https://localhost:7276/swagger (ou a porta informada no seu terminal). Use o botão Authorize no topo da página para inserir seu token JWT (no formato Bearer SEU_TOKEN) após fazer o Login.
+
+Como Rodar os Testes
 Para verificar se tudo está funcionando como esperado, execute os testes automatizados com o xUnit:
 
-```bash
+Bash
 dotnet test
-```
+Desenvolvido com dedicação por Lucas Marques de Oliveira
+www.linkedin.com/in/lucas-marques-dev
 
----
-Desenvolvido por [Lucas Marques de Oliveira](linkedin.com/in/lucas-marques-903234286)
