@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\AuthDb\" />
+    <Folder Include="Images\" />
   </ItemGroup>
 
 </Project>

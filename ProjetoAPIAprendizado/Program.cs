@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.FileProviders;
 using ProjetoAPIAprendizado.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -65,6 +65,11 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+// Permite que o repositório acesse os dados da requisição (URL, Host, etc)
+builder.Services.AddHttpContextAccessor();
+
+// Injeta o Repositório de Imagens
+builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 
 // Informamos ao C# que usaremos a Autenticação baseada em JWT
 builder.Services.AddAuthentication(options =>
@@ -124,5 +129,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/Images"
+});
 
 app.Run();
